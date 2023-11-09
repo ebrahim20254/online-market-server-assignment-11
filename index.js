@@ -86,6 +86,8 @@ async function run() {
           status: updateBid.status
         }
       }
+      const result = await bidCollection.updateOne(filter, updateJob)
+      res.send(result);
     })
 
 
