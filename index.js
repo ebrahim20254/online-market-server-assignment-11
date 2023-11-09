@@ -58,6 +58,14 @@ async function run() {
 
     // bidJOB
 
+    app.get('/bid', async(req, res) =>{
+      console.log(req.query.email);
+      let query = {};
+      
+      const result = await bidCollection.find(query).toArray();
+      res.send(result);
+    })
+
     app.post('/bid', async(req, res) => {
       const bid = req.body;
       console.log(bid);
