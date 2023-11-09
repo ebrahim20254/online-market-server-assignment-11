@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -37,11 +37,53 @@ async function run() {
 
    const newJobCollection = client.db('jobMaster').collection('newJob');
 
+   app.get('/job', async(req, res) =>{
+    const cursor = newJobCollection.find();
+    const result = await cursor.toArray();
+     res.send(result);
+   })
+
+
+   app.get('/job/:id', async(req, res) => {
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id) }
+    const result = await newJobCollection.findOne(query);
+    res.send(result);
+   })
+
+
    app.post('/job', async(req, res) =>{
     const addJob = req.body;
     console.log(addJob);
     const result = await newJobCollection.insertOne(addJob)
      res.send(result);
+   })
+
+   app.put('/job/:id', async(req, res) =>{
+    const id = req.params.id;
+    const filter = {_id: new ObjectId(id)}
+    const options = {upsert: true};
+    const updateJob = req.body;
+    const job = {
+      $set: {
+        email: updateJob.email,
+         title: updateJob.title,
+          date: updateJob.date,
+           description: updateJob.description, category: updateJob.category,
+            minimum: updateJob.minimum,
+             maximum: updateJob.maximum
+        
+      }
+    }
+    const result = await newJobCollection.updateOne(filter, job, options);
+    res.send(result);
+   })
+
+   app.delete('/job/:id', async(req, res) => {
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id) }
+    const result = await newJobCollection.deleteOne(query);
+    res.send(result);
    })
 
 
