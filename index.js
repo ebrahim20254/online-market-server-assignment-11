@@ -77,8 +77,15 @@ async function run() {
 
 
     app.patch('/bid/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id) };
       const updateBid = req.body;
       console.log(updateBid);
+      const updateJob = {
+        $set: {
+          status: updateBid.status
+        }
+      }
     })
 
 
