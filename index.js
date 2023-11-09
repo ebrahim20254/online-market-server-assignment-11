@@ -25,10 +25,14 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
 
    const jobCollection = client.db('jobMaster').collection('addJob');
+
+   const bidCollection = client.db('jobMaster').collection('bidJob');
+
+
    app.get('/jobs', async(req, res) =>{
     const cursor = jobCollection.find();
     const result = await cursor.toArray();
@@ -50,6 +54,17 @@ async function run() {
     const result = await newJobCollection.findOne(query);
     res.send(result);
    })
+
+
+    // bidJOB
+
+    app.post('/bid', async(req, res) => {
+      const bid = req.body;
+      console.log(bid);
+      const result = await bidCollection.insertOne(bid);
+      res.send(result);
+    })
+
 
 
    app.post('/job', async(req, res) =>{
@@ -79,12 +94,15 @@ async function run() {
     res.send(result);
    })
 
+
+
    app.delete('/job/:id', async(req, res) => {
     const id = req.params.id;
     const query = {_id: new ObjectId(id) }
     const result = await newJobCollection.deleteOne(query);
     res.send(result);
    })
+
 
 
     // Send a ping to confirm a successful connection
