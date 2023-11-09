@@ -35,6 +35,15 @@ async function run() {
      res.send(result);
    })
 
+   const newJobCollection = client.db('jobMaster').collection('newJob');
+
+   app.post('/job', async(req, res) =>{
+    const addJob = req.body;
+    console.log(addJob);
+    const result = await newJobCollection.insertOne(addJob)
+     res.send(result);
+   })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
